@@ -1,6 +1,6 @@
 const { Octokit } = require("@octokit/rest");
 
-const BATCH_LIMIT = 200;
+const BATCH_LIMIT = 100;
 
 const ENVIRONMENT = process.env;
 
@@ -35,14 +35,21 @@ function requestWorkflowBatch(kit, owner, repo, dateQuery) {
   });
 };
 
-function deleteWorkflowRun(kit, owner, repo, run) {
+async function deleteWorkflowRun(kit, owner, repo, run) {
   let deleteParameters = {
     owner: owner,
     repo: repo,
     run_id: run.id
   };
 
-  return kit.actions.deleteWorkflowRun(deleteParameters);
+  let { status } = await kit.actions.deleteWorkflowRun(deleteParameters);
+
+  if(status == 204){
+    console.log(`Deleted workflow run ${run.id}.`);
+  }
+  else{
+    throw new Error(`Something went wrong while deleting workflow "${run.head_commit.message}" with ID:${run.id}. Status code: ${status}`);
+  }
 }
 
 async function main(owner, repo, beforeDate) {
@@ -58,18 +65,12 @@ async function main(owner, repo, beforeDate) {
   let count = 0;
 
   while (runs.length > 0) {
-    if (count >= BATCH_LIMIT) {
-      console.log(`We currently limit batch cleanup to ${BATCH_LIMIT} at a time - and we've hit it.`);
-      return ;
-    }
     for (const workflowRun of runs) {
-      let { status } = await deleteWorkflowRun(octokit, owner, repo, workflowRun);
-      if(status == 204){
-        console.log(`Deleted workflow run ${workflowRun.id}.`);
+      if (count >= BATCH_LIMIT) {
+        console.log(`We currently limit batch cleanup to ${BATCH_LIMIT} at a time - and we've hit it.`);
+        return ;
       }
-      else{
-        throw new Error(`Something went wrong while deleting workflow "${workflowRun.head_commit.message}" with ID:${workflowRun.id}. Status code: ${status}`);
-      }
+      await deleteWorkflowRun(octokit, owner, repo, workflowRun);
       count++;
     }
     workflow_response = await requestWorkflowBatch(octokit, owner, repo, beforeDate);
