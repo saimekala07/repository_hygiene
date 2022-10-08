@@ -1,6 +1,6 @@
 const { Octokit } = require("@octokit/rest");
 
-const BATCH_LIMIT = 100;
+const BATCH_LIMIT = 200;
 
 const ENVIRONMENT = process.env;
 
