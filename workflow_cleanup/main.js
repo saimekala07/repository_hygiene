@@ -1,5 +1,7 @@
 const { Octokit } = require("@octokit/rest");
 
+const BATCH_LIMIT = 200;
+
 const ENVIRONMENT = process.env;
 
 const GITHUB_TOKEN = ENVIRONMENT.GITHUB_TOKEN;
@@ -53,7 +55,13 @@ async function main(owner, repo, beforeDate) {
 
   let runs = workflow_response.data.workflow_runs;
 
+  let count = 0;
+
   while (runs.length > 0) {
+    if (count >= BATCH_LIMIT) {
+      console.log(`We currently limit batch cleanup to ${BATCH_LIMIT} at a time - and we've hit it.`);
+      return ;
+    }
     for (const workflowRun of runs) {
       let { status } = await deleteWorkflowRun(octokit, owner, repo, workflowRun);
       if(status == 204){
@@ -62,6 +70,7 @@ async function main(owner, repo, beforeDate) {
       else{
         throw new Error(`Something went wrong while deleting workflow "${workflowRun.head_commit.message}" with ID:${workflowRun.id}. Status code: ${status}`);
       }
+      count++;
     }
     workflow_response = await requestWorkflowBatch(octokit, owner, repo, beforeDate);
     runs = workflow_response.data.workflow_runs;
