@@ -1,0 +1,15 @@
+name: Clean Enroll Workflows
+on: push
+
+jobs:
+  clean-old-workflows:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Packages
+        run: cd workflow_cleanup && npm install
+      - name: Remove Old Workflows
+        run: cd workflow_cleanup && npm run-script run-action
+        env:
+          BEFORE_DATE: 2021-04-01
+          REPOSITORY: ideacrew/enroll
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
