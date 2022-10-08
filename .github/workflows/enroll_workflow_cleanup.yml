@@ -5,6 +5,8 @@ jobs:
   clean-old-workflows:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Install Packages
         run: cd workflow_cleanup && npm install
       - name: Remove Old Workflows
