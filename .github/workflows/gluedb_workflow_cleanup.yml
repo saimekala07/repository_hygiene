@@ -1,0 +1,17 @@
+name: Clean GlueDB Workflows
+on: push
+
+jobs:
+  clean-old-workflows:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Packages
+        run: cd workflow_cleanup && npm install
+      - name: Remove Old Workflows
+        run: cd workflow_cleanup && npm run-script run-action
+        env:
+          BEFORE_DATE: 2021-05-01
+          REPOSITORY: ideacrew/gluedb
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
