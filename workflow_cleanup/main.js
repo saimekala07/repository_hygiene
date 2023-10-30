@@ -1,6 +1,6 @@
 const { Octokit } = require("@octokit/rest");
 
-const BATCH_LIMIT = 100;
+const BATCH_LIMIT = 20;
 
 const ENVIRONMENT = process.env;
 
@@ -31,7 +31,7 @@ function requestWorkflowBatch(kit, owner, repo, dateQuery) {
     owner: owner,
     repo: repo,
     created: dateQuery,
-    per_page: 50
+    per_page: 10
   });
 };
 
@@ -54,7 +54,7 @@ async function deleteWorkflowRun(kit, owner, repo, run) {
 
 async function doParaDelete(kit, owner, repo, runs) {
   for (const workflowRun of runs) {
-    deleteWorkflowRun(octokit, owner, repo, workflowRun);
+    deleteWorkflowRun(kit, owner, repo, workflowRun);
   }
 }
 
@@ -73,8 +73,8 @@ async function main(owner, repo, beforeDate) {
   while (runs.length > 0) {
     if ((runs.length + count) >= BATCH_LIMIT) {
       let remainder = BATCH_LIMIT - count;
-      let toProcess = remainder.slice(0, remainder);
-      await doParaDelete(octokit, owner, repo, remainder);
+      let toProcess = runs.slice(0, remainder);
+      await doParaDelete(octokit, owner, repo, toProcess);
       console.log(`We currently limit batch cleanup to ${BATCH_LIMIT} at a time - and we've hit it.`);
       return ;    
     } else {
