@@ -1,4 +1,4 @@
-name: Clean Enroll Workflows
+name: Clean ACA Entities Workflows
 on: push
 
 jobs:
@@ -13,5 +13,5 @@ jobs:
         run: cd workflow_cleanup && npm run-script run-action
         env:
           BEFORE_DATE: 2022-10-01
-          REPOSITORY: ideacrew/enroll
+          REPOSITORY: ideacrew/aca_entities
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
