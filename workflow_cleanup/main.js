@@ -54,7 +54,7 @@ async function deleteWorkflowRun(kit, owner, repo, run) {
 
 async function doParaDelete(kit, owner, repo, runs) {
   for (const workflowRun of runs) {
-    deleteWorkflowRun(kit, owner, repo, workflowRun);
+    await deleteWorkflowRun(kit, owner, repo, workflowRun);
   }
 }
 
