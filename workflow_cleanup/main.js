@@ -53,8 +53,17 @@ async function deleteWorkflowRun(kit, owner, repo, run) {
 }
 
 async function doParaDelete(kit, owner, repo, runs) {
-  for (const workflowRun of runs) {
-    await deleteWorkflowRun(kit, owner, repo, workflowRun);
+  let head = runs.slice(0,3);
+  let rest = runs.slice(3,-1);
+  while (head.length > 0) {
+    let headValues = [];
+    for (const run of head) {
+      headValues.push(deleteWorkflowRun(kit, owner, repo, run));
+    }
+    await Promise.allSettled(headValues);
+
+    head = rest.slice(0,3);
+    rest = rest.slice(3,-1);
   }
 }
 
