@@ -1,6 +1,6 @@
 const { Octokit } = require("@octokit/rest");
 
-const BATCH_LIMIT = 400;
+const BATCH_LIMIT = 100;
 
 const ENVIRONMENT = process.env;
 
@@ -53,8 +53,8 @@ async function deleteWorkflowRun(kit, owner, repo, run) {
 }
 
 async function doParaDelete(kit, owner, repo, runs) {
-  let head = runs.slice(0,3);
-  let rest = runs.slice(3,-1);
+  let head = runs.slice(0,2);
+  let rest = runs.slice(2,-1);
   while (head.length > 0) {
     let headValues = [];
     for (const run of head) {
@@ -62,8 +62,8 @@ async function doParaDelete(kit, owner, repo, runs) {
     }
     await Promise.allSettled(headValues);
 
-    head = rest.slice(0,3);
-    rest = rest.slice(3,-1);
+    head = rest.slice(0,2);
+    rest = rest.slice(2,-1);
   }
 }
 
