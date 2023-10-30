@@ -1,6 +1,6 @@
 const { Octokit } = require("@octokit/rest");
 
-const BATCH_LIMIT = 20;
+const BATCH_LIMIT = 400;
 
 const ENVIRONMENT = process.env;
 
@@ -31,7 +31,7 @@ function requestWorkflowBatch(kit, owner, repo, dateQuery) {
     owner: owner,
     repo: repo,
     created: dateQuery,
-    per_page: 10
+    per_page: 50
   });
 };
 
