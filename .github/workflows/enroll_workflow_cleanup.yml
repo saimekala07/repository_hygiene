@@ -12,6 +12,6 @@ jobs:
       - name: Remove Old Workflows
         run: cd workflow_cleanup && npm run-script run-action
         env:
-          BEFORE_DATE: 2024-02-13
+          BEFORE_DATE: 2024-02-15
           REPOSITORY: saimekala07/enroll
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
