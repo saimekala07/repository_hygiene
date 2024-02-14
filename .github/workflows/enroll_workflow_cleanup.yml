@@ -13,5 +13,5 @@ jobs:
         run: cd workflow_cleanup && npm run-script run-action
         env:
           BEFORE_DATE: 2024-02-13
-          REPOSITORY: ideacrew/enroll
+          REPOSITORY: saimekala07/enroll
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
